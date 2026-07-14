@@ -1,12 +1,14 @@
 import requests
 import uuid
+import config
+
 from datetime import datetime
-key_n = "dd9406fad0c041b58c2b4f05d744a7e0"
-key_g = "MDE5ZDdiNGQtNDVjNS03YjRlLTg5NWMtNmJlNmMyODQ5NDA0OjM5MTgzNjlhLTQ5YmYtNDdiNy1hZWE3LTYzM2Y0MmFkYzgyZQ=="
+key_n = config.NEWS_API_KEY
+key_g = config.GIGACHAT_KEY
 top = "Искусственный интеллект"
 def run():
     print("News...")
-    txt = "Анализ ИИ: технологии растут, нейросети внедряются в бизнес. Прогнозы позитивные."
+    txt = "Рынок ИИ активно развивается, появляются новые модели и решения для автоматизации. Тема остается актуальной)"
     try:
         url = f"https://newsapi.org{top}&language=ru&apiKey={key_n}"
         res = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'}, timeout=5).json()
@@ -19,13 +21,10 @@ def run():
         u_auth = "https://sberbank.ru"
         h_auth = {'Authorization': f'Basic {key_g}', 'RqUID': str(uuid.uuid4()),
                   'Content-Type': 'application/x-www-form-urlencoded'}
-        # Убрали verify=False
         token = requests.post(u_auth, data={'scope': 'GIGACHAT_API_PERS'}, headers=h_auth, timeout=5).json()[
             'access_token']
-
         u_chat = "https://sberbank.ru"
         pld = {"model": "GigaChat", "messages": [{"role": "user", "content": f"Напиши аннотацию на 250 слов: {txt}"}]}
-        # Убрали verify=False
         ans = \
         requests.post(u_chat, headers={'Authorization': f'Bearer {token}'}, json=pld, timeout=10).json()['choices'][
             'message']['content']
